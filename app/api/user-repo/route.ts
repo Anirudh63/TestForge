@@ -19,10 +19,11 @@ export async function POST(req: NextRequest) {
             private: private_ ? 1 : 0,
             htmlUrl: html_url,
             description,
-            owner
+            owner,
+            language,
+            defaultBranch: default_branch
         });
 
-        //@ts-ignore
         const result = await db.insert(repositories).values({
             repoId,
             userId,
@@ -31,7 +32,9 @@ export async function POST(req: NextRequest) {
             private: private_ ? 1 : 0,
             htmlUrl: html_url,
             description,
-            owner
+            owner,
+            language,
+            defaultBranch: default_branch
         }).returning();
 
         return NextResponse.json(result[0]);

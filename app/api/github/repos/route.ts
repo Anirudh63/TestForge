@@ -27,6 +27,7 @@ export async function GET() {
         page++;
     }
 
+
     return NextResponse.json(allRespo.map(r => ({
         id: r.id,
         name: r.name,
@@ -37,6 +38,7 @@ export async function GET() {
         updated_at: r.updated_at,
         language: r.language,
         default_branch: r.default_branch,
-        owner: r.owner.login
+        owner: r.owner.login,
+
     })));
 }
