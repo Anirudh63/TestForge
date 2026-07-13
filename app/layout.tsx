@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import Provider from "./provider";
 
 export const metadata: Metadata = {
-  title: "Testify AI | AI Test Automation Agent",
+  title: "TestForge",
   description: "AI Test Automation Agent",
 };
 
