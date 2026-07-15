@@ -21,6 +21,8 @@ export const repositories = pgTable("repositories", {
   owner: text("owner").notNull(),
   language: text("language"),
   defaultBranch: text("default_branch").notNull(),
+  targetDomain: varchar("target_domain").default('http://localhost:3000/'),
+  gloablInstruction: text("global_instruction"),
 })
 
 
