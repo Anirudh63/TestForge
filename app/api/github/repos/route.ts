@@ -22,11 +22,30 @@ export async function GET() {
         )
 
         const respos = await res.json();
+        if (!res.ok) {
+            console.error(`GitHub API error status ${res.status}:`, respos);
+            if (res.status === 401) {
+                cookiesStore.delete('gh_token');
+            }
+            return NextResponse.json(
+                { error: "GitHub API error", details: respos },
+                { status: res.status }
+            );
+        }
+        if (!Array.isArray(respos)) {
+            console.error("GitHub API returned non-array response:", respos);
+            break;
+        }
         if (!respos.length) break;
         allRespo.push(...respos);
         page++;
     }
 
+
+    console.log(`Fetched ${allRespo.length} repositories from GitHub.`);
+    if (allRespo.length === 0) {
+        console.log("No repositories were returned. Token preview:", token ? token.substring(0, 10) + "..." : "none");
+    }
 
     return NextResponse.json(allRespo.map(r => ({
         id: r.id,

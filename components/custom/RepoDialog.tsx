@@ -34,14 +34,28 @@ function RepoDialog({ setRefreshPage }: { setRefreshPage: (refresh: boolean) => 
     const [searchTerm, setSearchTerm] = useState('');
     const { userDetail } = useContext(UserDetailContext);
     const [isOpen, setIsOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+
     useEffect(() => {
-        GetRepoList();
-    }, [])
+        if (isOpen) {
+            GetRepoList();
+        }
+    }, [isOpen])
 
     const GetRepoList = async () => {
-        const result = await axios.get('/api/github/repos');
-        console.log(result.data);
-        setRepoList(result.data);
+        setLoading(true);
+        try {
+            const result = await axios.get('/api/github/repos');
+            console.log(result.data);
+            setRepoList(result.data);
+        } catch (error: any) {
+            console.error("Error fetching repositories:", error);
+            if (error.response?.status === 401) {
+                window.location.reload();
+            }
+        } finally {
+            setLoading(false);
+        }
     }
 
     const filteredRepoList = useMemo(() => {
@@ -49,7 +63,7 @@ function RepoDialog({ setRefreshPage }: { setRefreshPage: (refresh: boolean) => 
 
         if (!q) return repoList;
 
-        return repoList.filter(r => r.full_name.toLowerCase().includes(q));
+        return repoList.filter(r => r.full_name && r.full_name.toLowerCase().includes(q));
     }, [searchTerm, repoList])
 
     const SaveRepoToDB = async () => {
@@ -89,13 +103,23 @@ function RepoDialog({ setRefreshPage }: { setRefreshPage: (refresh: boolean) => 
                 <div>
                     <Input placeholder='Search Repos by Name' onChange={(event) => setSearchTerm(event.target.value)} />
                     {/* Repo List */}
-                    <ul className='max-h-60 overflow-y-auto border rounded-xl mt-4'>
-                        {filteredRepoList.map((repo) => (
-                            <li key={repo.id} className={`p-4 border-b hover:bg-gray-100 cursor-pointer
-                                ${selectedRepo?.id == repo.id ? 'bg-gray-100' : null}`}
-                                onClick={() => setSelectedRepo(repo)}>{repo.full_name}</li>
-                        ))}
-                    </ul>
+                    {loading ? (
+                        <div className='p-4 border rounded-xl mt-4 text-center text-gray-500 text-sm'>
+                            Loading repositories...
+                        </div>
+                    ) : filteredRepoList.length === 0 ? (
+                        <div className='p-4 border rounded-xl mt-4 text-center text-gray-500 text-sm'>
+                            No repositories found.
+                        </div>
+                    ) : (
+                        <ul className='max-h-60 overflow-y-auto border rounded-xl mt-4'>
+                            {filteredRepoList.map((repo) => (
+                                <li key={repo.id} className={`p-4 border-b hover:bg-gray-100 cursor-pointer
+                                    ${selectedRepo?.id == repo.id ? 'bg-gray-100' : null}`}
+                                    onClick={() => setSelectedRepo(repo)}>{repo.full_name}</li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
                 <DialogFooter className='flex gap-5'>
                     <DialogClose asChild>
