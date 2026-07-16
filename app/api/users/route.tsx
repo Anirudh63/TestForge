@@ -1,4 +1,4 @@
-import { db } from "@/db";
+import { db, withRetry } from "@/db";
 import { users } from "@/db/schema";
 import { currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
@@ -8,15 +8,19 @@ export async function POST(req: NextRequest) {
     const user = await currentUser();
 
     try {
-        const userResult = await db.select().from(users).where(
-            eq(users.email, user?.primaryEmailAddress?.emailAddress ?? '')
+        const userResult = await withRetry(() =>
+            db.select().from(users).where(
+                eq(users.email, user?.primaryEmailAddress?.emailAddress ?? '')
+            )
         );
 
         if (userResult.length == 0) {
-            const newUser = await db.insert(users).values({
-                email: user?.primaryEmailAddress?.emailAddress ?? '',
-                name: user?.fullName ?? 'New User'
-            }).returning()
+            const newUser = await withRetry(() =>
+                db.insert(users).values({
+                    email: user?.primaryEmailAddress?.emailAddress ?? '',
+                    name: user?.fullName ?? 'New User'
+                }).returning()
+            );
 
             return NextResponse.json({ user: newUser[0] })
         }

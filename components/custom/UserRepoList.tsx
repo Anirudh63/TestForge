@@ -7,13 +7,16 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion"
 import Image from 'next/image'
-import { CheckCircle2, ListChecks, Loader2, Loader2Icon, Sparkles, TrendingUp, XCircle } from 'lucide-react'
+import { CheckCircle2, Globe2Icon, Link2Icon, ListChecks, Loader2, Loader2Icon, Settings2, Sparkles, Trash2, TrendingUp, XCircle } from 'lucide-react'
 import { Button } from '../ui/button'
 import axios from 'axios'
 import { UserDetailContext } from '@/context/UserDetailContext'
 import TestCaseList from './TestCaseList'
+import RepoSettings from './RepoSettings'
+
 type props = {
-    repoList: UserRepo[]
+    repoList: UserRepo[],
+    setReload: () => void;
 }
 
 export type TestCase = {
@@ -21,12 +24,15 @@ export type TestCase = {
     title: string;
     description: string;
     type: string;
+    priority: string;
     repoId: number;
     targetFiles: string[];
     expectedResult: string;
     repoName: string;
     repoOwner: string;
     targetRoute: string;
+    status: string;
+    browserbaseScript: string;
 }
 
 type StatusData = {
@@ -36,7 +42,7 @@ type StatusData = {
     passRate: number;
 }
 
-function UserRepoList({ repoList }: props) {
+function UserRepoList({ repoList, setReload }: props) {
 
     const [statusData, setStatusData] = useState<StatusData>({
         totalTests: 0,
@@ -50,20 +56,29 @@ function UserRepoList({ repoList }: props) {
     const [loading, setLoading] = useState(false);
     const [testCaseLoading, setTestCaseLoading] = useState(false);
     const [testCases, setTestCases] = useState<TestCase[]>([]);
+    const [deletingRepoId, setDeletingRepoId] = useState<number | null>(null);
+
     const handleGenerateTestCases = async (repo: UserRepo) => {
         setLoading(true);
-        // Implement the logic to call the API route to generate test cases for the selected repository
-        const result = await axios.post('/api/generate-test-cases', {
-            userId: userDetail?.id,
-            repoId: repo?.repoId,
-            owner: repo.owner,
-            repo: repo.name,
-            branch: repo.defaultBranch,
-        });
+        try {
+            // Implement the logic to call the API route to generate test cases for the selected repository
+            const result = await axios.post('/api/generate-test-cases', {
+                userId: userDetail?.id,
+                repoId: repo?.repoId,
+                owner: repo.owner,
+                repo: repo.name,
+                branch: repo.defaultBranch,
+            });
 
-        console.log(result.data);
-        setLoading(false);
-
+            console.log(result.data);
+            // Refresh test cases list in the UI after generation
+            await GetTestCases(repo?.repoId);
+        } catch (error) {
+            console.error("Failed to generate test cases:", error);
+            alert("Failed to generate test cases. Please ensure your GitHub authorization is active.");
+        } finally {
+            setLoading(false);
+        }
     }
 
     const GetTestCases = async (repoId: number) => {
@@ -72,18 +87,42 @@ function UserRepoList({ repoList }: props) {
         setTestCases([]);
         const result = await axios.get(`/api/test-cases?repoId=${repoId}`);
         console.log(result.data);
+        const userTestCases = result.data as TestCase[];
+        const passedTests = userTestCases?.filter(testCase => testCase.status == 'passed').length || 0;
+        const failedTests = userTestCases?.filter(testCase => testCase.status == 'failed').length || 0;
+        const passRate = userTestCases?.length ? Math.round((passedTests / userTestCases.length) * 100) : 0;
+
 
         setStatusData({
             totalTests: result.data.length,
-            passedTests: 0,
-            failedTests: 0,
-            passRate: 0
+            passedTests: passedTests,
+            failedTests: failedTests,
+            passRate: passRate
         })
 
         setTestCases(result.data);
         setTestCaseLoading(false);
 
     }
+
+    const handleDeleteRepo = async (repo: UserRepo) => {
+        const confirmed = window.confirm(`Are you sure you want to remove "${repo.fullName}" and all its test cases? This cannot be undone.`);
+        if (!confirmed) return;
+
+        setDeletingRepoId(repo.repoId);
+        try {
+            await axios.post('/api/user-repo/delete', {
+                repoId: repo.repoId,
+                userId: userDetail?.id,
+            });
+            setReload();
+        } catch (err) {
+            console.error("Failed to delete repository:", err);
+            alert("Failed to delete repository. Please try again.");
+        } finally {
+            setDeletingRepoId(null);
+        }
+    };
 
     return (
         <div className='mt-10'>
@@ -93,7 +132,7 @@ function UserRepoList({ repoList }: props) {
             >
                 {repoList.map((repo, index) => (
 
-                    <AccordionItem key={repo.id} value={(repo.repoId).toString()} className='border px-5 rounded-xl mb-5'>
+                    <AccordionItem value={(repo.repoId).toString()} className='border px-5 rounded-xl mb-5'>
                         <AccordionTrigger>
                             <div className='flex items-center gap-5'>
                                 <Image src={'/github.png'} alt='github' width={30} height={30} />
@@ -110,6 +149,30 @@ function UserRepoList({ repoList }: props) {
 
                         <AccordionContent>
                             <div className='pt-4 space-y-5'>
+
+                                <div className='bg-gray-50 p-3 border rounded-xl flex justify-between items-center'>
+                                    <div className='flex gap-3 items-center'>
+                                        <Link2Icon className='text-primary' />
+                                        <h2>Target Domain:</h2>
+                                        <h2 className='bg-white p-1 px-2 border rounded-md text-primary font-medium'>{repo?.targetDomain}</h2>
+                                    </div>
+                                    <div className='flex gap-2 items-center'>
+                                        <RepoSettings repo={repo} setReload={setReload} />
+                                        <Button
+                                            variant={'destructive'}
+                                            size={'sm'}
+                                            onClick={() => handleDeleteRepo(repo)}
+                                            disabled={deletingRepoId === repo.repoId}
+                                            className='gap-1'
+                                        >
+                                            {deletingRepoId === repo.repoId
+                                                ? <Loader2 className='h-3 w-3 animate-spin' />
+                                                : <Trash2 className='h-3 w-3' />
+                                            }
+                                            Remove
+                                        </Button>
+                                    </div>
+                                </div>
                                 <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
 
                                     <StatusCard
@@ -142,7 +205,9 @@ function UserRepoList({ repoList }: props) {
                                 </div>
 
                                 {!testCaseLoading && testCases.length > 0
-                                    && <TestCaseList testCases={testCases} onReload={(repoId: number) => GetTestCases(repoId)} />}
+                                    && <TestCaseList testCases={testCases} onReload={(repoId: number) => GetTestCases(repoId)}
+                                        repository={repo}
+                                    />}
 
                                 {testCaseLoading ?
                                     <h2 className='flex gap-3 items-center'> <Loader2Icon className='animate-spin' /> Please Wait... </h2>

@@ -1,4 +1,4 @@
-import { db } from "@/db";
+import { db, withRetry } from "@/db";
 import { TestCasesTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
@@ -12,8 +12,10 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: 'repoId is required' }, { status: 400 })
     }
 
-    const result = await db.select().from(TestCasesTable).where(
-        eq(TestCasesTable.repoId, repoId)
+    const result = await withRetry(() =>
+        db.select().from(TestCasesTable).where(
+            eq(TestCasesTable.repoId, repoId)
+        )
     )
 
     return NextResponse.json(result)
