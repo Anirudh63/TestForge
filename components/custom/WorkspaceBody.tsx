@@ -23,6 +23,8 @@ export type UserRepo = {
   updatedAt: string;
   language: string;
   defaultBranch: string;
+  targetDomain?: string;
+  gloablInstruction?: string;
 }
 
 function WorkspaceBody() {
@@ -32,6 +34,7 @@ function WorkspaceBody() {
   const router = useRouter()
   const [token, setToken] = useState('');
   const [userRepoList, setUserRepoList] = useState<UserRepo[]>([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     GetGithubUserToken();
 
@@ -52,9 +55,11 @@ function WorkspaceBody() {
   }
 
   const GetUserAddedRepoList = async () => {
+    setLoading(true);
     const result = await axios.get('/api/user-repo?userId=' + userDetail?.id);
     console.log(result.data);
     setUserRepoList(result.data);
+    setLoading(false);
   }
 
 
@@ -74,18 +79,26 @@ function WorkspaceBody() {
         <div>
 
           {!token ? <Button onClick={OnAddRepo}>Setup</Button>
-            : <RepoDialog setRefreshPage={(refresh: boolean) => GetUserAddedRepoList()} />}
+            : <RepoDialog setRefreshPage={(refresh: boolean) => GetUserAddedRepoList()} addedRepoIds={userRepoList.map(r => r.repoId)} />}
         </div>
       </Card>
 
-      {!userRepoList ? <Card className='mt-10'>
-        <CardContent>
-          <EmptyWorkspace />
-
-
-        </CardContent>
-      </Card> :
-        <UserRepoList repoList={userRepoList} />}
+      {loading ? (
+        <div className='mt-10'>
+          <div className='my-3 bg-slate-200 animate-pulse w-32 h-6 rounded'></div>
+          {[1, 2, 3].map((item) => (
+            <div key={item} className='w-full h-16 bg-slate-200 animate-pulse rounded-xl mb-5'></div>
+          ))}
+        </div>
+      ) : userRepoList?.length === 0 ? (
+        <Card className='mt-10'>
+          <CardContent>
+            <EmptyWorkspace />
+          </CardContent>
+        </Card>
+      ) : (
+        <UserRepoList repoList={userRepoList} setReload={() => GetUserAddedRepoList()} />
+      )}
 
 
     </div>
