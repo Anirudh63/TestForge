@@ -102,13 +102,12 @@ function WorkspaceBody() {
             <p className='text-xs text-slate-500 mt-0.5 font-normal'>Link your GitHub repository to start generating AI-powered end-to-end test cases</p>
           </div>
         </div>
-        <div className='relative z-10 self-end sm:self-auto'>
-          {!token ? (
-            <Button onClick={OnAddRepo} className='bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-medium px-5 py-2.5 rounded-xl shadow-md shadow-indigo-500/25 hover:shadow-indigo-500/35 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 gap-2 cursor-pointer'>
-              <GitBranch className='h-4 w-4' /> Setup GitHub
+        <div className='relative z-10 self-end sm:self-auto flex items-center gap-2.5 flex-wrap'>
+          <RepoDialog setRefreshPage={(refresh: boolean) => GetUserAddedRepoList()} addedRepoIds={userRepoList.map(r => r.repoId)} />
+          {!token && (
+            <Button onClick={OnAddRepo} variant="outline" className='border-indigo-200 text-indigo-600 hover:bg-indigo-50 font-medium px-4 py-2 rounded-xl gap-2 text-xs cursor-pointer h-10'>
+              <GitBranch className='h-4 w-4' /> Authorize GitHub
             </Button>
-          ) : (
-            <RepoDialog setRefreshPage={(refresh: boolean) => GetUserAddedRepoList()} addedRepoIds={userRepoList.map(r => r.repoId)} />
           )}
         </div>
       </div>

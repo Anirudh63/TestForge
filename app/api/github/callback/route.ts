@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -32,10 +33,10 @@ export async function GET(req: NextRequest) {
         return NextResponse.redirect(new URL(`/workspace?error=${errorType}&reason=${encodeURIComponent(errorReason)}`, req.url));
     }
 
-    const response = NextResponse.redirect(new URL('/workspace', req.url));
+    const cookieStore = await cookies();
 
-    // store token in http-only cookie
-    response.cookies.set('gh_token', token, {
+    // store token in http-only cookie via Next.js cookies API
+    cookieStore.set('gh_token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: 60 * 60 * 24 * 30, // 30 days
@@ -43,5 +44,5 @@ export async function GET(req: NextRequest) {
         sameSite: 'lax'
     });
 
-    return response;
+    return NextResponse.redirect(new URL('/workspace', req.url));
 }
