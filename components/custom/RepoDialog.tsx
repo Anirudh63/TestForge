@@ -14,7 +14,7 @@ import axios from 'axios';
 import { Input } from '../ui/input';
 import { UserDetailContext } from '@/context/UserDetailContext';
 import { Badge } from '../ui/badge';
-import { CheckCircle2, Loader2 } from 'lucide-react';
+import { CheckCircle2, Loader2, Plus } from 'lucide-react';
 
 export type Repo = {
     id: number;
@@ -112,50 +112,56 @@ function RepoDialog({ setRefreshPage, addedRepoIds = [] }: { setRefreshPage: (re
     return (
         <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
             <DialogTrigger asChild>
-                <Button>+Add Repo</Button>
+                <Button className='bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-medium px-5 py-2.5 rounded-xl shadow-md shadow-indigo-500/25 hover:shadow-indigo-500/35 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 gap-2 cursor-pointer'>
+                    <Plus className='h-4 w-4' /> Add Repo
+                </Button>
             </DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Add Repository</DialogTitle>
-                    <DialogDescription>
-                        Search and select one of your github repositories
+            <DialogContent className='rounded-2xl border border-slate-200/80 p-6 max-w-md bg-white/95 backdrop-blur-xl shadow-xl'>
+                <DialogHeader className='space-y-1'>
+                    <DialogTitle className='text-xl font-bold text-slate-900 tracking-tight'>Add Repository</DialogTitle>
+                    <DialogDescription className='text-xs text-slate-500'>
+                        Search and select one of your GitHub repositories to import.
                     </DialogDescription>
                 </DialogHeader>
-                <div>
-                    <Input placeholder='Search Repos by Name' onChange={(event) => setSearchTerm(event.target.value)} />
+                <div className='mt-3'>
+                    <Input
+                        placeholder='Search repositories...'
+                        onChange={(event) => setSearchTerm(event.target.value)}
+                        className='border-slate-200 focus:border-indigo-500 focus:ring-indigo-500/20 h-10 rounded-xl bg-slate-50/50 text-sm'
+                    />
                     {/* Repo List */}
                     {loading ? (
-                        <div className='p-4 border rounded-xl mt-4 text-center text-gray-500 text-sm flex items-center justify-center gap-2'>
-                            <Loader2 className='h-4 w-4 animate-spin' /> Loading repositories...
+                        <div className='p-8 border border-slate-200/80 rounded-xl mt-4 text-center text-slate-500 text-xs flex items-center justify-center gap-2 bg-slate-50/50'>
+                            <Loader2 className='h-4 w-4 animate-spin text-indigo-600' /> Loading repositories...
                         </div>
                     ) : filteredRepoList.length === 0 ? (
-                        <div className='p-4 border rounded-xl mt-4 text-center text-gray-500 text-sm'>
+                        <div className='p-8 border border-slate-200/80 rounded-xl mt-4 text-center text-slate-500 text-xs bg-slate-50/50'>
                             No repositories found.
                         </div>
                     ) : (
-                        <ul className='max-h-60 overflow-y-auto border rounded-xl mt-4'>
+                        <ul className='max-h-60 overflow-y-auto border border-slate-200/80 rounded-xl mt-4 divide-y divide-slate-100'>
                             {filteredRepoList.map((repo) => {
                                 const isAlreadyAdded = addedRepoIdSet.has(repo.id);
 
                                 return (
                                     <li
                                         key={repo.id}
-                                        className={`p-4 border-b flex items-center justify-between
+                                        className={`p-3 flex items-center justify-between transition-colors
                                             ${isAlreadyAdded
-                                                ? 'bg-gray-50 opacity-60 cursor-not-allowed'
-                                                : 'hover:bg-gray-100 cursor-pointer'}
-                                            ${selectedRepo?.id === repo.id && !isAlreadyAdded ? 'bg-primary/5 border-l-2 border-l-primary' : ''}`}
+                                                ? 'bg-slate-50 opacity-60 cursor-not-allowed'
+                                                : 'hover:bg-indigo-50/50 cursor-pointer'}
+                                            ${selectedRepo?.id === repo.id && !isAlreadyAdded ? 'bg-indigo-50/80 border-l-2 border-l-indigo-600' : ''}`}
                                         onClick={() => !isAlreadyAdded && setSelectedRepo(repo)}
                                     >
-                                        <div className='flex flex-col'>
-                                            <span className='font-medium text-sm'>{repo.full_name}</span>
+                                        <div className='flex flex-col min-w-0 pr-2'>
+                                            <span className='font-semibold text-xs text-slate-900 truncate'>{repo.full_name}</span>
                                             {repo.language && (
-                                                <span className='text-xs text-gray-400 mt-0.5'>{repo.language} • {repo.default_branch}</span>
+                                                <span className='text-[10px] text-slate-400 mt-0.5'>{repo.language} • {repo.default_branch}</span>
                                             )}
                                         </div>
                                         {isAlreadyAdded && (
-                                            <Badge variant='secondary' className='text-[10px] gap-1 flex-shrink-0'>
-                                                <CheckCircle2 className='h-3 w-3 text-green-600' /> Added
+                                            <Badge variant='secondary' className='text-[9px] font-semibold gap-1 flex-shrink-0 bg-emerald-50 text-emerald-600 border border-emerald-100 px-2 py-0.5 rounded-full'>
+                                                <CheckCircle2 className='h-2.5 w-2.5' /> Added
                                             </Badge>
                                         )}
                                     </li>
@@ -164,16 +170,17 @@ function RepoDialog({ setRefreshPage, addedRepoIds = [] }: { setRefreshPage: (re
                         </ul>
                     )}
                 </div>
-                <DialogFooter className='flex gap-5'>
+                <DialogFooter className='flex gap-2 mt-4'>
                     <DialogClose asChild>
-                        <Button variant="ghost">Cancel</Button>
+                        <Button variant="ghost" className='text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-xl h-10 cursor-pointer'>Cancel</Button>
                     </DialogClose>
                     <Button
                         disabled={!userDetail || !selectedRepo || saving}
                         onClick={() => SaveRepoToDB()}
+                        className='bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-semibold rounded-xl h-10 text-xs shadow-md shadow-indigo-500/20 cursor-pointer'
                     >
-                        {saving ? <><Loader2 className='h-4 w-4 animate-spin mr-1' /> Adding...</>
-                            : !userDetail ? 'Loading...' : 'Add'}
+                        {saving ? <><Loader2 className='h-3.5 w-3.5 animate-spin mr-1' /> Adding...</>
+                            : !userDetail ? 'Loading...' : 'Add Repository'}
                     </Button>
                 </DialogFooter>
             </DialogContent>

@@ -73,52 +73,52 @@ function TestCaseSettingDialog({ testCase, setReload }: props) {
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
-            <DialogTrigger>
-                <Button size={'icon'} variant={'outline'}>
-                    <SettingsIcon className='h-4 w-4' />
+            <DialogTrigger asChild>
+                <Button size={'icon'} variant={'outline'} className='border-[#edf2f7] text-[#64748b] hover:text-[#1a1a2e] h-8 w-8 rounded-lg'>
+                    <SettingsIcon className='h-3.5 w-3.5' />
                 </Button>
             </DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Edit Testing Requirements</DialogTitle>
-                    <DialogDescription>
-                        Modifying these parameters automatically clears pre-generated scripts to ensure synchronization.
+            <DialogContent className='rounded-2xl border border-[#edf2f7] p-6 max-w-md'>
+                <DialogHeader className='space-y-1'>
+                    <DialogTitle className='text-base font-bold text-[#1a1a2e]'>Edit Test Case</DialogTitle>
+                    <DialogDescription className='text-xs text-[#94a3b8]'>
+                        Modifying parameters automatically clears pre-generated scripts to ensure synchronization.
                     </DialogDescription>
                 </DialogHeader>
 
-                <div>
-                    <div className='mt-1'>
-                        <label className='text-gray-500 text-xs font-medium uppercase tracking-wider'>TEST TITLE</label>
+                <div className='space-y-3.5 mt-3'>
+                    <div className='space-y-1'>
+                        <label className='text-[10px] font-bold text-[#94a3b8] uppercase tracking-wider'>Test Title</label>
                         <Input value={formTestCase?.title}
                             onChange={(event) => handleInputChange('title', event?.target?.value)}
-                            placeholder='Test Title' className='mt-1' />
+                            placeholder='Test Title' className='border-[#edf2f7] focus:border-[#6366f1] focus:ring-[#6366f1]/20 h-10 rounded-xl text-xs' />
                     </div>
-                    <div className='mt-4'>
-                        <label className='text-gray-500 text-xs font-medium uppercase tracking-wider'>DESCRIPTION/ACTION</label>
+                    <div className='space-y-1'>
+                        <label className='text-[10px] font-bold text-[#94a3b8] uppercase tracking-wider'>Description / Action</label>
                         <Textarea
                             onChange={(event) => handleInputChange('description', event?.target?.value)}
-                            value={formTestCase?.description} placeholder='Description' className='mt-1' />
+                            value={formTestCase?.description} placeholder='Describe the test action...' className='border-[#edf2f7] focus:border-[#6366f1] focus:ring-[#6366f1]/20 rounded-xl text-xs min-h-[60px]' />
                     </div>
 
-                    <div className='grid grid-cols-2 gap-3 mt-4'>
-                        <div>
-                            <label className='text-gray-500 text-xs font-medium uppercase tracking-wider'>TEST TYPE</label>
+                    <div className='grid grid-cols-2 gap-3'>
+                        <div className='space-y-1'>
+                            <label className='text-[10px] font-bold text-[#94a3b8] uppercase tracking-wider'>Test Type</label>
                             <select
                                 value={formTestCase.type}
                                 onChange={(e) => handleInputChange('type', e.target.value)}
-                                className='w-full mt-1 rounded-md border border-gray-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-primary capitalize'
+                                className='w-full rounded-xl border border-[#edf2f7] px-3 py-2 text-xs bg-white text-[#475569] focus:outline-none focus:ring-1 focus:ring-[#6366f1] capitalize h-10'
                             >
                                 {TEST_TYPES.map(t => (
                                     <option key={t} value={t} className='capitalize'>{t}</option>
                                 ))}
                             </select>
                         </div>
-                        <div>
-                            <label className='text-gray-500 text-xs font-medium uppercase tracking-wider'>PRIORITY</label>
+                        <div className='space-y-1'>
+                            <label className='text-[10px] font-bold text-[#94a3b8] uppercase tracking-wider'>Priority</label>
                             <select
                                 value={formTestCase.priority}
                                 onChange={(e) => handleInputChange('priority', e.target.value)}
-                                className='w-full mt-1 rounded-md border border-gray-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-primary capitalize'
+                                className='w-full rounded-xl border border-[#edf2f7] px-3 py-2 text-xs bg-white text-[#475569] focus:outline-none focus:ring-1 focus:ring-[#6366f1] capitalize h-10'
                             >
                                 {PRIORITIES.map(p => (
                                     <option key={p} value={p} className='capitalize'>{p}</option>
@@ -127,27 +127,29 @@ function TestCaseSettingDialog({ testCase, setReload }: props) {
                         </div>
                     </div>
 
-                    <div className='mt-4'>
-                        <label className='text-gray-500 text-xs font-medium uppercase tracking-wider'>TARGET ROUTE/PATH</label>
+                    <div className='space-y-1'>
+                        <label className='text-[10px] font-bold text-[#94a3b8] uppercase tracking-wider'>Target Route / Path</label>
                         <Input value={formTestCase?.targetRoute}
                             onChange={(event) => handleInputChange('targetRoute', event?.target?.value)}
-                            placeholder='Target Route' className='mt-1' />
-                        <p className='text-[10px] text-gray-400 mt-0.5'>Frontend page path only (e.g. /login, /dashboard). Never use /api/... routes.</p>
+                            placeholder='/login, /dashboard' className='border-[#edf2f7] focus:border-[#6366f1] focus:ring-[#6366f1]/20 h-10 rounded-xl text-xs' />
+                        <p className='text-[10px] text-[#94a3b8] leading-normal'>Frontend path only (e.g. /login). Never use /api/... routes.</p>
                     </div>
-                    <div className='mt-4'>
-                        <label className='text-gray-500 text-xs font-medium uppercase tracking-wider'>EXPECTED RESULT</label>
+                    <div className='space-y-1'>
+                        <label className='text-[10px] font-bold text-[#94a3b8] uppercase tracking-wider'>Expected Result</label>
                         <Textarea value={formTestCase?.expectedResult}
                             onChange={(event) => handleInputChange('expectedResult', event?.target?.value)}
-                            placeholder='Expected Result' className='mt-1' />
-                        <p className='text-[10px] text-gray-400 mt-0.5'>What the browser should see after the test (visible text, elements, or URL changes).</p>
+                            placeholder='What should appear after the test...' className='border-[#edf2f7] focus:border-[#6366f1] focus:ring-[#6366f1]/20 rounded-xl text-xs min-h-[60px]' />
+                        <p className='text-[10px] text-[#94a3b8] leading-normal'>What the browser should see after the test (text, elements, or URL changes).</p>
                     </div>
                 </div>
-                <DialogFooter>
-                    <DialogClose>
-                        <Button variant={'outline'}>
-                            Cancel</Button></DialogClose>
-                    <Button onClick={updateCase} disabled={saving}>
-                        {saving ? <><Loader2 className='h-4 w-4 animate-spin mr-1' /> Saving...</> : 'Update Case'}
+                <DialogFooter className='flex gap-2 mt-4'>
+                    <DialogClose asChild>
+                        <Button variant={'outline'} className='border-[#edf2f7] text-[#64748b] hover:bg-[#f1f5f9] rounded-xl text-xs h-10'>
+                            Cancel
+                        </Button>
+                    </DialogClose>
+                    <Button onClick={updateCase} disabled={saving} className='bg-[#6366f1] hover:bg-[#5558e6] text-white bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:from-[#5558e6] hover:to-[#7c3aed] shadow-md shadow-indigo-100 rounded-xl text-xs font-semibold h-10'>
+                        {saving ? <><Loader2 className='h-3.5 w-3.5 animate-spin mr-1' /> Saving...</> : 'Update Case'}
                     </Button>
                 </DialogFooter>
             </DialogContent>

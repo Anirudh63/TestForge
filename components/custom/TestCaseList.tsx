@@ -19,24 +19,24 @@ type Props = {
 };
 
 const TYPE_COLORS: Record<string, string> = {
-    functional: 'bg-blue-100 text-blue-800',
-    ui: 'bg-indigo-100 text-indigo-800',
-    auth: 'bg-amber-100 text-amber-800',
-    form: 'bg-teal-100 text-teal-800',
-    integration: 'bg-purple-100 text-purple-800',
-    regression: 'bg-orange-100 text-orange-800',
-    smoke: 'bg-cyan-100 text-cyan-800',
-    performance: 'bg-pink-100 text-pink-800',
-    accessibility: 'bg-emerald-100 text-emerald-800',
-    security: 'bg-red-100 text-red-800',
-    'edge-case': 'bg-gray-100 text-gray-700',
-    api: 'bg-violet-100 text-violet-800',
+    functional: 'bg-[#eef2ff] text-[#6366f1]',
+    ui: 'bg-[#eef2ff] text-[#818cf8]',
+    auth: 'bg-[#fefce8] text-[#a16207]',
+    form: 'bg-[#ecfdf5] text-[#059669]',
+    integration: 'bg-[#f5f3ff] text-[#7c3aed]',
+    regression: 'bg-[#fff7ed] text-[#c2410c]',
+    smoke: 'bg-[#ecfeff] text-[#0891b2]',
+    performance: 'bg-[#fdf2f8] text-[#be185d]',
+    accessibility: 'bg-[#ecfdf5] text-[#047857]',
+    security: 'bg-[#fef2f2] text-[#dc2626]',
+    'edge-case': 'bg-[#f1f5f9] text-[#475569]',
+    api: 'bg-[#f5f3ff] text-[#7c3aed]',
 };
 
 const PRIORITY_COLORS: Record<string, string> = {
-    high: 'bg-red-50 text-red-700 border-red-200',
-    medium: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-    low: 'bg-green-50 text-green-700 border-green-200',
+    high: 'bg-[#fef2f2] text-[#dc2626] border-[#fecaca]',
+    medium: 'bg-[#fefce8] text-[#a16207] border-[#fef08a]',
+    low: 'bg-[#ecfdf5] text-[#059669] border-[#a7f3d0]',
 };
 
 function TestCaseList({ testCases, onReload, repository }: Props) {
@@ -114,31 +114,32 @@ function TestCaseList({ testCases, onReload, repository }: Props) {
     return (
         <div>
             {/* Header */}
-            <div className='flex items-center justify-between mb-3'>
-                <h2 className='font-semibold text-lg text-gray-800 flex items-center gap-2'>
-                    <ListChecks className='h-5 w-5 text-primary' />
-                    Generated Test Cases
-                    <span className='text-sm font-normal text-gray-400'>({filteredTestCases.length} of {testCases.length})</span>
+            <div className='flex items-center justify-between mb-4'>
+                <h2 className='font-bold text-sm text-[#1a1a2e] flex items-center gap-2'>
+                    <ListChecks className='h-4 w-4 text-[#6366f1]' />
+                    Test Cases
+                    <span className='text-[11px] font-normal text-[#94a3b8]'>({filteredTestCases.length} of {testCases.length})</span>
                 </h2>
                 <div className='flex gap-2'>
-                    <Button size={'sm'} variant={'outline'} onClick={() => onReload(repository?.repoId)}>
+                    <Button size={'sm'} variant={'outline'} onClick={() => onReload(repository?.repoId)}
+                        className='text-xs h-8 border-[#edf2f7] hover:bg-[#f8fafc] text-[#64748b] rounded-lg'>
                         <RefreshCw className='h-3 w-3 mr-1' /> Refresh
                     </Button>
-                    <Button size={'sm'} onClick={handleRunAll} className='bg-primary text-white gap-1'>
+                    <Button size={'sm'} onClick={handleRunAll} className='bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:from-[#5558e6] hover:to-[#7c3aed] text-white shadow-md shadow-indigo-50/50 gap-1.5 h-8 text-xs rounded-lg'>
                         <Play className='h-3 w-3 fill-white' /> Run All
                     </Button>
                 </div>
             </div>
 
             {/* Filters */}
-            <div className='flex gap-3 mb-3 items-center flex-wrap'>
-                <div className='flex items-center gap-1.5 text-xs text-gray-500'>
+            <div className='flex gap-3 mb-4 items-center flex-wrap'>
+                <div className='flex items-center gap-1.5 text-[11px] font-medium text-[#94a3b8] uppercase tracking-wider'>
                     <Filter className='h-3.5 w-3.5' /> Filters:
                 </div>
                 <select
                     value={filterType}
                     onChange={e => setFilterType(e.target.value)}
-                    className='text-xs border rounded-md px-2 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary'
+                    className='text-xs border border-[#edf2f7] rounded-xl px-3 py-1.5 bg-white text-[#64748b] focus:outline-none focus:ring-1 focus:ring-[#6366f1] focus:border-[#6366f1] h-8 capitalize'
                 >
                     {uniqueTypes.map(t => (
                         <option key={t} value={t}>{t === 'all' ? 'All Types' : t}</option>
@@ -147,7 +148,7 @@ function TestCaseList({ testCases, onReload, repository }: Props) {
                 <select
                     value={filterStatus}
                     onChange={e => setFilterStatus(e.target.value)}
-                    className='text-xs border rounded-md px-2 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-primary'
+                    className='text-xs border border-[#edf2f7] rounded-xl px-3 py-1.5 bg-white text-[#64748b] focus:outline-none focus:ring-1 focus:ring-[#6366f1] focus:border-[#6366f1] h-8'
                 >
                     <option value='all'>All Status</option>
                     <option value='generated'>Pending</option>
@@ -158,15 +159,15 @@ function TestCaseList({ testCases, onReload, repository }: Props) {
             </div>
 
             {/* Test case list */}
-            <div className='border rounded-xl overflow-hidden'>
+            <div className='border border-[#edf2f7] rounded-2xl overflow-hidden bg-white shadow-[0_1px_3px_rgba(0,0,0,0.02)]'>
                 {/* Select All Header */}
-                <div className='px-4 py-2.5 bg-gray-50 border-b flex items-center justify-between'>
+                <div className='px-4 py-2.5 bg-[#f8fafc] border-b border-[#edf2f7] flex items-center justify-between'>
                     <div className='flex items-center gap-3'>
                         <Checkbox
                             checked={allSelected}
                             onCheckedChange={handleSelectAll}
                         />
-                        <span className='text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                        <span className='text-[10px] font-bold text-[#94a3b8] uppercase tracking-wider'>
                             {selectedTestCases.length > 0
                                 ? `${selectedTestCases.length} selected`
                                 : 'Select All'}
@@ -179,7 +180,7 @@ function TestCaseList({ testCases, onReload, repository }: Props) {
                                 variant={'destructive'}
                                 onClick={handleDeleteSelected}
                                 disabled={deleting}
-                                className='h-7 text-xs gap-1'
+                                className='h-7 text-xs gap-1 rounded-lg'
                             >
                                 {deleting ? <Loader2 className='h-3 w-3 animate-spin' /> : <Trash2 className='h-3 w-3' />}
                                 Delete ({selectedTestCases.length})
@@ -190,7 +191,7 @@ function TestCaseList({ testCases, onReload, repository }: Props) {
 
                 {/* Test Cases */}
                 {filteredTestCases.length === 0 ? (
-                    <div className='p-8 text-center text-gray-400 text-sm'>
+                    <div className='p-12 text-center text-[#94a3b8] text-xs bg-[#f8fafc]'>
                         No test cases match the current filters.
                     </div>
                 ) : (
@@ -199,8 +200,8 @@ function TestCaseList({ testCases, onReload, repository }: Props) {
                         const priority = (testCase as any).priority || 'medium';
 
                         return (
-                            <div key={testCase.id} className='border-b last:border-b-0'>
-                                <div className='p-4 flex items-center justify-between hover:bg-gray-50/50 transition-colors'>
+                            <div key={testCase.id} className='border-b border-[#edf2f7] last:border-b-0'>
+                                <div className='p-4 flex items-center justify-between hover:bg-[#f8fafc] transition-colors'>
                                     <div className='flex gap-3 items-center flex-1 min-w-0'>
                                         <Checkbox
                                             checked={selectedTestCases?.some((item: any) => item.id === testCase?.id)}
@@ -208,45 +209,45 @@ function TestCaseList({ testCases, onReload, repository }: Props) {
                                         />
                                         <button
                                             onClick={() => setExpandedId(isExpanded ? null : testCase.id)}
-                                            className='text-gray-400 hover:text-gray-600 transition-colors'
+                                            className='text-[#94a3b8] hover:text-[#64748b] transition-colors'
                                         >
                                             {isExpanded
                                                 ? <ChevronUp className='h-4 w-4' />
                                                 : <ChevronDown className='h-4 w-4' />}
                                         </button>
                                         <div className='min-w-0 flex-1'>
-                                            <h2 className='font-medium text-sm text-gray-800 truncate'>{testCase?.title}</h2>
-                                            <p className='text-xs text-gray-400 truncate mt-0.5'>{testCase?.description}</p>
+                                            <h2 className='font-semibold text-xs text-[#1a1a2e] truncate'>{testCase?.title}</h2>
+                                            <p className='text-[11px] text-[#94a3b8] truncate mt-0.5'>{testCase?.description}</p>
                                         </div>
                                     </div>
                                     <div className='gap-2 flex items-center flex-shrink-0 ml-3'>
                                         <Badge
                                             variant='outline'
-                                            className={`text-[10px] font-medium capitalize border ${PRIORITY_COLORS[priority] || PRIORITY_COLORS.medium}`}
+                                            className={`text-[9px] font-bold capitalize border px-2 py-0.5 rounded-full ${PRIORITY_COLORS[priority] || PRIORITY_COLORS.medium}`}
                                         >
                                             {priority}
                                         </Badge>
-                                        <Badge className={`text-[10px] font-medium capitalize border-none ${TYPE_COLORS[testCase?.type] || 'bg-gray-100 text-gray-700'}`}>
+                                        <Badge className={`text-[9px] font-bold capitalize border-none px-2 py-0.5 rounded-full ${TYPE_COLORS[testCase?.type] || 'bg-[#f1f5f9] text-[#475569]'}`}>
                                             {testCase?.type}
                                         </Badge>
 
                                         {testCase?.status === 'failed' && (
-                                            <Badge variant={'destructive'} className='text-[10px] font-normal gap-1'>
-                                                <XCircle className='h-3 w-3' /> Failed
+                                            <Badge variant={'destructive'} className='text-[9px] font-semibold gap-1 px-2.5 py-0.5 rounded-full'>
+                                                <XCircle className='h-2.5 w-2.5' /> Failed
                                             </Badge>
                                         )}
                                         {testCase?.status === 'passed' && (
-                                            <Badge className='text-[10px] font-normal bg-emerald-600 text-white gap-1'>
-                                                <CheckCircle2 className='h-3 w-3' /> Passed
+                                            <Badge className='text-[9px] font-semibold bg-[#10b981] text-white gap-1 px-2.5 py-0.5 rounded-full'>
+                                                <CheckCircle2 className='h-2.5 w-2.5' /> Passed
                                             </Badge>
                                         )}
                                         {testCase?.status === 'running' && (
-                                            <Badge className='text-[10px] font-normal bg-amber-500 text-white gap-1'>
-                                                <Loader2 className='h-3 w-3 animate-spin' /> Running
+                                            <Badge className='text-[9px] font-semibold bg-[#f59e0b] text-white gap-1 px-2.5 py-0.5 rounded-full'>
+                                                <Loader2 className='h-2.5 w-2.5 animate-spin' /> Running
                                             </Badge>
                                         )}
                                         {testCase?.status === 'generated' && (
-                                            <Badge variant={'secondary'} className='text-[10px]'>Pending</Badge>
+                                            <Badge variant={'secondary'} className='text-[9px] font-semibold px-2.5 py-0.5 rounded-full bg-[#f1f5f9] text-[#64748b] border-none'>Pending</Badge>
                                         )}
 
                                         <TestCaseSettingDialog testCase={testCase} setReload={() => onReload(repository?.repoId)} />
@@ -255,22 +256,22 @@ function TestCaseList({ testCases, onReload, repository }: Props) {
 
                                 {/* Expandable Details */}
                                 {isExpanded && (
-                                    <div className='px-4 pb-4 pt-1 ml-[52px] border-t bg-gray-50/30'>
-                                        <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs'>
+                                    <div className='px-4 pb-4 pt-2.5 ml-[52px] border-t border-[#edf2f7] bg-[#fafbfc] rounded-b-xl'>
+                                        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs'>
                                             <div>
-                                                <span className='font-semibold text-gray-500 uppercase text-[10px] tracking-wider'>Target Route</span>
-                                                <p className='text-gray-700 font-mono mt-0.5'>{testCase?.targetRoute || '/'}</p>
+                                                <span className='font-bold text-[#94a3b8] uppercase text-[9px] tracking-wider'>Target Route</span>
+                                                <p className='text-[#475569] font-mono text-[11px] mt-1 bg-[#f8fafc] border border-[#edf2f7] rounded-lg px-2.5 py-1.5 inline-block'>{testCase?.targetRoute || '/'}</p>
                                             </div>
                                             <div>
-                                                <span className='font-semibold text-gray-500 uppercase text-[10px] tracking-wider'>Expected Result</span>
-                                                <p className='text-gray-700 mt-0.5'>{testCase?.expectedResult || 'N/A'}</p>
+                                                <span className='font-bold text-[#94a3b8] uppercase text-[9px] tracking-wider'>Expected Result</span>
+                                                <p className='text-[#475569] mt-1 text-[11px] bg-[#f8fafc] border border-[#edf2f7] rounded-lg px-2.5 py-1.5'>{testCase?.expectedResult || 'N/A'}</p>
                                             </div>
                                             {testCase?.targetFiles && testCase.targetFiles.length > 0 && (
                                                 <div className='sm:col-span-2'>
-                                                    <span className='font-semibold text-gray-500 uppercase text-[10px] tracking-wider'>Target Files</span>
-                                                    <div className='flex gap-1.5 flex-wrap mt-1'>
+                                                    <span className='font-bold text-[#94a3b8] uppercase text-[9px] tracking-wider'>Target Files</span>
+                                                    <div className='flex gap-1.5 flex-wrap mt-1.5'>
                                                         {testCase.targetFiles.map((f, i) => (
-                                                            <span key={i} className='bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-mono text-[10px]'>
+                                                            <span key={i} className='bg-white border border-[#edf2f7] text-[#475569] px-2 py-0.5 rounded-lg font-mono text-[10px]'>
                                                                 {f}
                                                             </span>
                                                         ))}
@@ -286,8 +287,8 @@ function TestCaseList({ testCases, onReload, repository }: Props) {
                 )}
 
                 {/* Footer: Run Selected */}
-                <div className='p-4 flex items-center justify-between bg-gray-50 border-t'>
-                    <h2 className='text-sm font-medium text-gray-600'>
+                <div className='p-4 flex items-center justify-between bg-[#f8fafc] border-t border-[#edf2f7]'>
+                    <h2 className='text-xs font-semibold text-[#64748b]'>
                         {selectedTestCases.length > 0
                             ? `Run ${selectedTestCases.length} selected test case(s)`
                             : 'Select test cases to run'}
@@ -295,7 +296,7 @@ function TestCaseList({ testCases, onReload, repository }: Props) {
                     <Button
                         disabled={selectedTestCases?.length === 0}
                         onClick={() => setIsModelOpen(true)}
-                        className='gap-2'
+                        className='gap-2 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:from-[#5558e6] hover:to-[#7c3aed] text-white shadow-md shadow-indigo-100 rounded-xl px-5 py-2'
                     >
                         <Play className='h-4 w-4 fill-white' /> Run Test Cases
                     </Button>

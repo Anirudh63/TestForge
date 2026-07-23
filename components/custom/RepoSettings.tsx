@@ -47,38 +47,41 @@ function RepoSettings({ repo, setReload }: props) {
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
-            <DialogTrigger>
-                <Button> <Settings2 className='h-4 2-4 mr-1' /> Project Config</Button>
+            <DialogTrigger asChild>
+                <Button className='bg-white border border-[#edf2f7] text-[#64748b] hover:bg-[#f8fafc] hover:text-[#1a1a2e] h-9 text-xs rounded-xl shadow-xs gap-1.5'>
+                    <Settings2 className='h-3.5 w-3.5' /> Config
+                </Button>
             </DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle className='flex gap-2 items-center'> <Settings2 className='text-primary' /> Project/Repo Settings</DialogTitle>
-                    <DialogDescription>
-                        Configure project-level defaults used during script generation and execution.
+            <DialogContent className='rounded-2xl border border-[#edf2f7] p-6 max-w-md'>
+                <DialogHeader className='space-y-1'>
+                    <DialogTitle className='flex gap-2 items-center text-base font-bold text-[#1a1a2e]'>
+                        <Settings2 className='text-[#6366f1] h-4 w-4' /> Project Settings
+                    </DialogTitle>
+                    <DialogDescription className='text-xs text-[#94a3b8]'>
+                        Configure defaults used during AI script generation.
                     </DialogDescription>
                 </DialogHeader>
-                <div>
-                    <div>
-                        <label className='text-gray-500'>APP URL/DEFAULT WEBSITE</label>
+                <div className='space-y-4 mt-3'>
+                    <div className='space-y-1.5'>
+                        <label className='text-[10px] font-bold text-[#94a3b8] uppercase tracking-wider'>App URL / Default Website</label>
                         <Input value={repoSettings?.targetDomain}
                             onChange={(e) => setRepoSettings({ ...repoSettings, targetDomain: e.target.value })}
-                            placeholder='App url/Domain' className='mt-1' />
-                        <p className='text-xs text-gray-400'>The target address where automated headless browsers will connect and run test cases.</p>
+                            placeholder='https://your-app.vercel.app' className='border-[#edf2f7] focus:border-[#6366f1] focus:ring-[#6366f1]/20 h-10 rounded-xl text-xs' />
+                        <p className='text-[10px] text-[#94a3b8] leading-normal'>The target address where headless browsers will connect and run test cases.</p>
                     </div>
-                    <div className='mt-4'>
-                        <label className='text-gray-500'>GLOBAL TEST INSTRUCTION</label>
+                    <div className='space-y-1.5'>
+                        <label className='text-[10px] font-bold text-[#94a3b8] uppercase tracking-wider'>Global Test Instruction</label>
                         <Textarea value={repoSettings?.globalInstruction}
                             onChange={(e) => setRepoSettings({ ...repoSettings, globalInstruction: e.target.value })}
-
-                            placeholder='Instructions' className='mt-1' />
-                        <p className='text-xs text-gray-400'>Include any authentication credentials, cookies, setup, or teardown instructions. These are automatically appended to Gemini's prompts.</p>
+                            placeholder='Authentication credentials, setup instructions...' className='border-[#edf2f7] focus:border-[#6366f1] focus:ring-[#6366f1]/20 rounded-xl text-xs min-h-[80px]' />
+                        <p className='text-[10px] text-[#94a3b8] leading-normal'>Include credentials, cookies, or setup instructions. Appended to AI prompts.</p>
                     </div>
                 </div>
-                <DialogFooter>
-                    <DialogClose>
-                        <Button variant={'outline'}>Cancel</Button>
+                <DialogFooter className='flex gap-2 mt-4'>
+                    <DialogClose asChild>
+                        <Button variant={'outline'} className='border-[#edf2f7] text-[#64748b] hover:bg-[#f1f5f9] rounded-xl text-xs h-10'>Cancel</Button>
                     </DialogClose>
-                    <Button onClick={handleSaveSettings}>Save Config</Button>
+                    <Button onClick={handleSaveSettings} className='bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:from-[#5558e6] hover:to-[#7c3aed] text-white shadow-md shadow-indigo-100 rounded-xl text-xs font-semibold h-10'>Save Config</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

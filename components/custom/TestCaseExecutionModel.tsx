@@ -248,15 +248,15 @@ export default function TestExecutionModal({ isOpen, onClose, testCases, reposit
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="max-w-5xl h-[90vh] flex flex-col p-6 gap-4 bg-white rounded-2xl shadow-2xl border overflow-hidden select-none">
-                <DialogHeader className="border-b pb-4 flex flex-row items-center justify-between shrink-0">
+            <DialogContent className="max-w-5xl h-[90vh] flex flex-col p-6 gap-4 bg-white rounded-2xl shadow-lg border border-[#e2e8f0] overflow-hidden select-none">
+                <DialogHeader className="border-b border-[#e2e8f0] pb-4 flex flex-row items-center justify-between shrink-0">
                     <div>
-                        <DialogTitle className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                            <PlayCircle className="text-primary h-6 w-6" />
-                            Browserbase Cloud Test Runner
+                        <DialogTitle className="text-xl font-semibold text-[#1a1a2e] flex items-center gap-2">
+                            <PlayCircle className="text-[#6366f1] h-5 w-5" />
+                            Test Runner
                         </DialogTitle>
-                        <DialogDescription className="text-gray-500 text-sm">
-                            Run automation scripts on the deployed target URL using Browserbase headless browser infrastructure.
+                        <DialogDescription className="text-[#94a3b8] text-sm">
+                            Run automation scripts on the deployed target URL using cloud browser infrastructure.
                         </DialogDescription>
                     </div>
                 </DialogHeader>
@@ -265,13 +265,13 @@ export default function TestExecutionModal({ isOpen, onClose, testCases, reposit
                 {(isExecuting || executionComplete) && (
                     <div className="shrink-0 space-y-2">
                         <div className="flex items-center justify-between text-xs">
-                            <span className="font-medium text-gray-600 flex items-center gap-1.5">
-                                <BarChart3 className="h-3.5 w-3.5 text-primary" />
+                            <span className="font-medium text-[#64748b] flex items-center gap-1.5">
+                                <BarChart3 className="h-3.5 w-3.5 text-[#6366f1]" />
                                 Progress: {progress.completed} / {progress.total}
                             </span>
                             <div className="flex gap-3 text-[10px] font-medium">
                                 {progress.passed > 0 && (
-                                    <span className="text-emerald-600 flex items-center gap-0.5">
+                                    <span className="text-[#10b981] flex items-center gap-0.5">
                                         <CheckCircle2 className="h-3 w-3" /> {progress.passed} passed
                                     </span>
                                 )}
@@ -287,7 +287,7 @@ export default function TestExecutionModal({ isOpen, onClose, testCases, reposit
                                 )}
                             </div>
                         </div>
-                        <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="w-full h-1.5 bg-[#e2e8f0] rounded-full overflow-hidden">
                             <div
                                 className="h-full rounded-full transition-all duration-500 ease-out"
                                 style={{
@@ -302,18 +302,18 @@ export default function TestExecutionModal({ isOpen, onClose, testCases, reposit
                 )}
 
                 {/* Target Configuration Header */}
-                <div className="flex flex-col bg-gray-50 p-4 rounded-2xl border border-gray-200/80 gap-3 shrink-0">
+                <div className="flex flex-col bg-[#f8fafc] p-4 rounded-xl border border-[#e2e8f0] gap-3 shrink-0">
                     <div className="flex flex-col sm:flex-row gap-4 items-end">
                         <div className="flex-1 space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
-                                <Globe className="h-3.5 w-3.5 text-primary" /> Target Website URL
+                            <label className="text-xs font-medium text-[#94a3b8] uppercase tracking-wider flex items-center gap-1.5">
+                                <Globe className="h-3.5 w-3.5 text-[#6366f1]" /> Target Website URL
                             </label>
                             <Input
                                 placeholder="e.g. https://your-app.vercel.app"
                                 value={baseUrl}
                                 onChange={(e) => setBaseUrl(e.target.value)}
                                 disabled={isExecuting}
-                                className="bg-white border-gray-300 font-mono text-sm shadow-xs h-10"
+                                className="bg-white border-[#e2e8f0] font-mono text-sm h-10"
                             />
                         </div>
                         <div className="flex gap-2.5">
@@ -321,7 +321,7 @@ export default function TestExecutionModal({ isOpen, onClose, testCases, reposit
                                 type="button"
                                 variant="outline"
                                 onClick={() => setShowOptions(!showOptions)}
-                                className={`h-10 px-4 font-medium text-xs gap-1.5 transition-colors border-gray-300 ${showOptions ? "bg-primary/5 text-primary border-primary/30" : ""}`}
+                                className={`h-10 px-4 font-medium text-xs gap-1.5 transition-colors border-[#e2e8f0] ${showOptions ? "bg-[#eef2ff] text-[#6366f1] border-[#c7d2fe]" : ""}`}
                             >
                                 <SlidersHorizontal className="h-4 w-4" />
                                 Options
@@ -341,7 +341,7 @@ export default function TestExecutionModal({ isOpen, onClose, testCases, reposit
                             {!isExecuting ? (
                                 <Button
                                     onClick={() => startExecution()}
-                                    className="h-10 bg-primary hover:bg-primary/95 text-white shadow-md font-medium px-6 gap-2"
+                                    className="h-10 bg-[#6366f1] hover:bg-[#5558e6] text-white font-medium px-6 gap-2"
                                 >
                                     <Play className="h-4 w-4 fill-white" /> Start Execution
                                 </Button>
@@ -410,8 +410,8 @@ export default function TestExecutionModal({ isOpen, onClose, testCases, reposit
                 {/* Main Dashboard Panel */}
                 <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-5 overflow-hidden">
                     {/* Left: Test Cases Queue List */}
-                    <div className="md:col-span-1 border rounded-xl overflow-y-auto bg-gray-50/50 p-3 flex flex-col gap-2 shadow-xs">
-                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider px-2 mb-1">
+                    <div className="md:col-span-1 border border-[#e2e8f0] rounded-xl overflow-y-auto bg-[#f8fafc] p-3 flex flex-col gap-2">
+                        <h3 className="text-[11px] font-semibold text-[#94a3b8] uppercase tracking-wider px-2 mb-1">
                             Execution Queue
                         </h3>
                         {testCases.map((tc, index) => {
@@ -425,17 +425,17 @@ export default function TestExecutionModal({ isOpen, onClose, testCases, reposit
                                     key={tc.id}
                                     onClick={() => setSelectedDetailId(tc.id)}
                                     className={`p-3 rounded-lg border cursor-pointer transition-all ${isActive
-                                        ? "bg-white border-primary shadow-sm ring-1 ring-primary/20"
-                                        : "bg-white border-gray-200 hover:border-gray-300 shadow-xs"
+                                        ? "bg-white border-[#6366f1] shadow-sm ring-1 ring-[#6366f1]/20"
+                                        : "bg-white border-[#e2e8f0] hover:border-[#cbd5e1]"
                                         }`}
                                 >
                                     <div className="flex justify-between items-start gap-2 mb-1">
-                                        <h4 className="font-semibold text-sm text-gray-800 line-clamp-1">
+                                        <h4 className="font-medium text-sm text-[#1a1a2e] line-clamp-1">
                                             {tc.title}
                                         </h4>
-                                        <ChevronRight className={`h-4 w-4 text-gray-400 transition-transform ${isActive ? "rotate-90 text-primary" : ""}`} />
+                                        <ChevronRight className={`h-4 w-4 text-[#94a3b8] transition-transform ${isActive ? "rotate-90 text-[#6366f1]" : ""}`} />
                                     </div>
-                                    <p className="text-xs text-gray-400 line-clamp-1 mb-2.5">
+                                    <p className="text-xs text-[#94a3b8] line-clamp-1 mb-2.5">
                                         {tc.description}
                                     </p>
                                     <div className="flex justify-between items-center">
@@ -450,16 +450,16 @@ export default function TestExecutionModal({ isOpen, onClose, testCases, reposit
                     </div>
 
                     {/* Right: Code, Live Logs & Details Panel */}
-                    <div className="md:col-span-2 border rounded-xl flex flex-col bg-white overflow-hidden shadow-sm">
+                    <div className="md:col-span-2 border border-[#e2e8f0] rounded-xl flex flex-col bg-white overflow-hidden">
                         {currentSelectedTestCase ? (
                             <div className="flex-1 flex flex-col overflow-hidden">
                                 {/* Header Info */}
-                                <div className="p-4 border-b bg-gray-50/50 flex justify-between items-start gap-4 shrink-0">
+                                <div className="p-4 border-b border-[#e2e8f0] bg-[#f8fafc] flex justify-between items-start gap-4 shrink-0">
                                     <div>
-                                        <h3 className="font-bold text-base text-gray-800">
+                                        <h3 className="font-semibold text-sm text-[#1a1a2e]">
                                             {currentSelectedTestCase.title}
                                         </h3>
-                                        <p className="text-xs text-gray-500 mt-1">
+                                        <p className="text-xs text-[#94a3b8] mt-1">
                                             Expected: {currentSelectedTestCase.expectedResult}
                                         </p>
                                     </div>
@@ -545,7 +545,7 @@ export default function TestExecutionModal({ isOpen, onClose, testCases, reposit
                 </div>
 
                 {/* Footer Controls */}
-                <div className="border-t pt-4 flex justify-between items-center shrink-0">
+                <div className="border-t border-[#e2e8f0] pt-4 flex justify-between items-center shrink-0">
                     <div className="flex gap-2">
                         {executionComplete && hasFailedTests && (
                             <Button

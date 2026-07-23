@@ -1,20 +1,26 @@
 import Image from 'next/image'
 import React from 'react'
 import { Button } from '../ui/button'
-import { LinkIcon } from 'lucide-react'
+import { GitBranch, ArrowRight } from 'lucide-react'
 
 function EmptyWorkspace() {
     return (
-        <div className='flex flex-col items-center justify-center py-16 px-6'>
-            <Image src={'/folder.png'} alt='folder' width={80} height={80} className='mb-6' />
-            <h2 className='font-semibold text-2xl text-gray-900 mb-2'>No Repository Connected</h2>
-            <p className='text-center text-gray-500 max-w-md mb-6 leading-relaxed'>
-                Connect your Github accounts and add a repository to generate and run test cases
+        <div className='flex flex-col items-center justify-center py-20 px-6 text-center'>
+            <div className='relative group mb-6'>
+                <div className='absolute -inset-1 rounded-3xl bg-gradient-to-r from-indigo-500 to-violet-500 opacity-20 blur-xl group-hover:opacity-40 transition-opacity duration-300 pointer-events-none' />
+                <div className='relative w-20 h-20 bg-gradient-to-br from-indigo-50 via-purple-50 to-white rounded-2xl flex items-center justify-center border border-indigo-100/80 shadow-sm'>
+                    <Image src={'/folder.png'} alt='folder' width={38} height={38} className='drop-shadow-sm' />
+                </div>
+            </div>
+            <h2 className='font-extrabold text-2xl text-slate-900 tracking-tight mb-2'>No repositories added yet</h2>
+            <p className='text-slate-500 text-sm max-w-sm mb-8 leading-relaxed font-normal'>
+                Connect your GitHub account and link a repository to automatically generate end-to-end AI test cases.
             </p>
 
-            <Button className='bg-[#2b5c37] hover:bg-[#1e4227] text-white px-5 py-2 rounded-md font-semibold text-sm flex items-center gap-2 transition-all cursor-pointer'>
-                <LinkIcon className='h-4 w-4' />
-                Connect Repo
+            <Button className='bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white px-6 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 cursor-pointer shadow-md shadow-indigo-500/25 hover:shadow-indigo-500/35 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200'>
+                <GitBranch className='h-4 w-4' />
+                Connect Repository
+                <ArrowRight className='h-4 w-4 ml-0.5' />
             </Button>
         </div>
     )

@@ -3,9 +3,8 @@ import React from 'react'
 
 function Workspace() {
     return (
-        <div className='mx-auto max-w-4xl p-10'>
+        <div className='mx-auto max-w-5xl px-4 sm:px-8 py-8 sm:py-10 animate-in fade-in slide-in-from-bottom-2 duration-500'>
             <WorkspaceBody />
-
         </div>
     )
 }
