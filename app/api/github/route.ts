@@ -1,11 +1,15 @@
-import { redirect } from "next/navigation"
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+    const host = req.headers.get("host") || "testforge-autotest.vercel.app";
+    const protocol = host.includes("localhost") ? "http" : "https";
+    const redirectUri = `${protocol}://${host}/api/github/callback`;
+
     const params = new URLSearchParams({
         client_id: process.env.GITHUB_CLIENT_ID!,
-        redirect_uri: process.env.GITHUB_REDIRECT_URI!,
+        redirect_uri: redirectUri,
         scope: 'repo read:user'
-    })
+    });
 
-    redirect(`https://github.com/login/oauth/authorize?${params}`)
+    return NextResponse.redirect(`https://github.com/login/oauth/authorize?${params}`);
 }
