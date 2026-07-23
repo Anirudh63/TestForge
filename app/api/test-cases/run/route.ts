@@ -28,16 +28,19 @@ async function readGithubFile({
     repo: string;
     path: string;
     branch: string;
-    githubToken: string;
+    githubToken?: string;
 }) {
+    const headers: Record<string, string> = {
+        Accept: "application/vnd.github+json",
+        "User-Agent": "TestForge-AI-Agent",
+    };
+    if (githubToken) {
+        headers.Authorization = `Bearer ${githubToken}`;
+    }
+
     const res = await fetch(
         `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`,
-        {
-            headers: {
-                Authorization: `Bearer ${githubToken}`,
-                Accept: "application/vnd.github+json",
-            },
-        }
+        { headers }
     );
 
     if (!res.ok) {
@@ -223,13 +226,6 @@ export async function POST(req: NextRequest) {
         if (forceRegenerate) {
             const cookiesStore = await cookies();
             const githubToken = cookiesStore.get("gh_token")?.value;
-
-            if (!githubToken) {
-                return NextResponse.json(
-                    { error: "GitHub authentication token is missing or expired" },
-                    { status: 401 }
-                );
-            }
 
             // Fetch target files context
             const targetFiles = testCase.targetFiles || [];

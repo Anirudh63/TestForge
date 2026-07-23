@@ -91,16 +91,19 @@ async function getRepoTree({
     owner: string;
     repo: string;
     branch: string;
-    githubToken: string;
+    githubToken?: string;
 }) {
+    const headers: Record<string, string> = {
+        Accept: "application/vnd.github+json",
+        "User-Agent": "TestForge-AI-Agent",
+    };
+    if (githubToken) {
+        headers.Authorization = `Bearer ${githubToken}`;
+    }
+
     const res = await fetch(
         `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`,
-        {
-            headers: {
-                Authorization: `Bearer ${githubToken}`,
-                Accept: "application/vnd.github+json",
-            },
-        }
+        { headers }
     );
 
     if (!res.ok) {
@@ -126,16 +129,19 @@ async function readGithubFile({
     repo: string;
     path: string;
     branch: string;
-    githubToken: string;
+    githubToken?: string;
 }) {
+    const headers: Record<string, string> = {
+        Accept: "application/vnd.github+json",
+        "User-Agent": "TestForge-AI-Agent",
+    };
+    if (githubToken) {
+        headers.Authorization = `Bearer ${githubToken}`;
+    }
+
     const res = await fetch(
         `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`,
-        {
-            headers: {
-                Authorization: `Bearer ${githubToken}`,
-                Accept: "application/vnd.github+json",
-            },
-        }
+        { headers }
     );
 
     if (!res.ok) {
@@ -173,11 +179,11 @@ export async function POST(req: NextRequest) {
             branch = "main",
         } = body;
 
-        if (!userId || !owner || !repo || !githubToken) {
-            console.log("Validation failed:", { userId, owner, repo, hasToken: !!githubToken });
+        if (!userId || !owner || !repo) {
+            console.log("Validation failed:", { userId, owner, repo });
             return NextResponse.json(
                 {
-                    error: "userId, owner, repo and githubToken are required",
+                    error: "userId, owner, and repo are required",
                 },
                 { status: 400 }
             );
