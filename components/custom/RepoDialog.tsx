@@ -109,6 +109,45 @@ function RepoDialog({ setRefreshPage, addedRepoIds = [] }: { setRefreshPage: (re
         }
     }
 
+    const [fetchingPublic, setFetchingPublic] = useState(false);
+
+    const handleFetchPublicRepo = async () => {
+        const clean = searchTerm.trim();
+        if (!clean.includes('/')) {
+            alert("Please enter repository in 'owner/repository' format (e.g. Anirudh63/zenza)");
+            return;
+        }
+        const parts = clean.split('/');
+        const owner = parts[0].trim();
+        const name = parts[1].trim();
+
+        if (!owner || !name) return;
+
+        setFetchingPublic(true);
+        try {
+            const res = await axios.get(`https://api.github.com/repos/${owner}/${name}`);
+            const data = res.data;
+            const repoObj: Repo = {
+                id: data.id,
+                name: data.name,
+                full_name: data.full_name,
+                private_: data.private,
+                html_url: data.html_url,
+                description: data.description || '',
+                language: data.language || 'JavaScript',
+                updated_at: data.updated_at,
+                default_branch: data.default_branch || 'main',
+                owner: data.owner.login
+            };
+            setSelectedRepo(repoObj);
+        } catch (e: any) {
+            console.error("Failed to fetch public repo:", e);
+            alert("Could not find repository '" + clean + "'. Please verify the owner/name format.");
+        } finally {
+            setFetchingPublic(false);
+        }
+    };
+
     return (
         <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
             <DialogTrigger asChild>
@@ -120,26 +159,49 @@ function RepoDialog({ setRefreshPage, addedRepoIds = [] }: { setRefreshPage: (re
                 <DialogHeader className='space-y-1'>
                     <DialogTitle className='text-xl font-bold text-slate-900 tracking-tight'>Add Repository</DialogTitle>
                     <DialogDescription className='text-xs text-slate-500'>
-                        Search and select one of your GitHub repositories to import.
+                        Select from your list or type <span className='font-mono text-indigo-600 font-semibold'>owner/repo</span> (e.g. Anirudh63/zenza) to import.
                     </DialogDescription>
                 </DialogHeader>
-                <div className='mt-3'>
-                    <Input
-                        placeholder='Search repositories...'
-                        onChange={(event) => setSearchTerm(event.target.value)}
-                        className='border-slate-200 focus:border-indigo-500 focus:ring-indigo-500/20 h-10 rounded-xl bg-slate-50/50 text-sm'
-                    />
+                <div className='mt-3 space-y-3'>
+                    <div className='flex gap-2'>
+                        <Input
+                            placeholder='Search or type owner/repo...'
+                            value={searchTerm}
+                            onChange={(event) => setSearchTerm(event.target.value)}
+                            className='border-slate-200 focus:border-indigo-500 focus:ring-indigo-500/20 h-10 rounded-xl bg-slate-50/50 text-sm flex-1'
+                        />
+                        {searchTerm.includes('/') && (
+                            <Button
+                                size='sm'
+                                onClick={handleFetchPublicRepo}
+                                disabled={fetchingPublic}
+                                className='h-10 px-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 border border-indigo-200 rounded-xl font-medium text-xs cursor-pointer shrink-0'
+                            >
+                                {fetchingPublic ? <Loader2 className='h-3.5 w-3.5 animate-spin' /> : 'Fetch'}
+                            </Button>
+                        )}
+                    </div>
                     {/* Repo List */}
                     {loading ? (
                         <div className='p-8 border border-slate-200/80 rounded-xl mt-4 text-center text-slate-500 text-xs flex items-center justify-center gap-2 bg-slate-50/50'>
                             <Loader2 className='h-4 w-4 animate-spin text-indigo-600' /> Loading repositories...
                         </div>
                     ) : filteredRepoList.length === 0 ? (
-                        <div className='p-8 border border-slate-200/80 rounded-xl mt-4 text-center text-slate-500 text-xs bg-slate-50/50'>
-                            No repositories found.
+                        <div className='p-6 border border-slate-200/80 rounded-xl text-center text-slate-500 text-xs bg-slate-50/50 space-y-2'>
+                            <p>No account repositories found.</p>
+                            {searchTerm.includes('/') && (
+                                <Button
+                                    size='sm'
+                                    onClick={handleFetchPublicRepo}
+                                    disabled={fetchingPublic}
+                                    className='bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg text-xs font-medium px-3 py-1.5'
+                                >
+                                    Import "{searchTerm}"
+                                </Button>
+                            )}
                         </div>
                     ) : (
-                        <ul className='max-h-60 overflow-y-auto border border-slate-200/80 rounded-xl mt-4 divide-y divide-slate-100'>
+                        <ul className='max-h-60 overflow-y-auto border border-slate-200/80 rounded-xl divide-y divide-slate-100'>
                             {filteredRepoList.map((repo) => {
                                 const isAlreadyAdded = addedRepoIdSet.has(repo.id);
 
@@ -168,6 +230,13 @@ function RepoDialog({ setRefreshPage, addedRepoIds = [] }: { setRefreshPage: (re
                                 );
                             })}
                         </ul>
+                    )}
+
+                    {selectedRepo && (
+                        <div className='p-3 bg-indigo-50/80 border border-indigo-100 rounded-xl flex items-center justify-between text-xs'>
+                            <span className='font-semibold text-indigo-950 truncate'>Selected: {selectedRepo.full_name}</span>
+                            <CheckCircle2 className='h-4 w-4 text-indigo-600 shrink-0 ml-2' />
+                        </div>
                     )}
                 </div>
                 <DialogFooter className='flex gap-2 mt-4'>

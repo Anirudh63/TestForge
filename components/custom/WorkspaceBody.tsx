@@ -124,7 +124,7 @@ function WorkspaceBody() {
         </div>
       ) : userRepoList?.length === 0 ? (
         <div className='border border-slate-200/80 rounded-2xl bg-white/90 backdrop-blur-md shadow-sm overflow-hidden'>
-          <EmptyWorkspace />
+          <EmptyWorkspace onAddRepo={OnAddRepo} hasToken={!!token} setRefreshPage={() => GetUserAddedRepoList()} addedRepoIds={userRepoList.map(r => r.repoId)} />
         </div>
       ) : (
         <UserRepoList repoList={userRepoList} setReload={() => GetUserAddedRepoList()} />
